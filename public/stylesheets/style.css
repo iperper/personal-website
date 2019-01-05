@@ -1,0 +1,36 @@
+.jumbotron {
+    margin-bottom: 0px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #009aa2d4;
+    color: white;
+    min-height: 300px;
+    padding: 2rem 3rem;
+    /*text-shadow: black 0.3em 0.3em 0.3em;*/
+}
+
+.jumbotron-fluid-bg{
+    background-image: url('../images/sierra_trip.jpg');
+    margin-bottom: 0px;
+    background-position: 50% 40%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #009aa2d4;
+    color: white;
+    min-height: 500px
+    }
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
+.img-capped{
+  max-width: 60%
+}
+
+@media (min-width: 992px){
+  .img-capped{
+    max-width: 50%
+  }
+}

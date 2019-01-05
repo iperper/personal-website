@@ -3,21 +3,26 @@ nav.navbar.fixed-top.navbar-expand-sm.bg-light.navbar-light
   a.navbar-brand(href='#') Isaac Perper
 
   // Toggler/collapsibe Button
+
+  //.collapse.navbar-collapse(data-toggle="collapse" //data-target=".navbar-collapse")
+
   button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
     span.navbar-toggler-icon
 
   // Navbar links
   #collapsibleNavbar.collapse.navbar-collapse
-    ul.navbar-nav
+    ul.navbar-nav.mr-auto
       li.nav-item
-        a.nav-link(href='#') Home
+        a(href='#')
+          .nav-link(data-toggle="collapse" data-target=".navbar-collapse.show") Home
       li.nav-item
-        a.nav-link(href='#') About Me
+        a(href='#about')
+          .nav-link(data-toggle='collapse' data-target='.navbar-collapse.show') About Me
       li.nav-item
-        a.nav-link(href='#') Portfolio
+        a(href='#projects')
+          .nav-link(data-toggle='collapse' data-target='.navbar-collapse.show') Portfolio
       li.nav-item
-        a.nav-link(href='#') Resume
+        a(href='#contact')
+          .nav-link(data-toggle='collapse' data-target='.navbar-collapse.show') Contact
       li.nav-item
-        a.nav-link(href='#') Contact
-
-
+        a.nav-link(href="images/resume.pdf") Resume

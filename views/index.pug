@@ -1,39 +1,44 @@
 extends layout
 
 block content
-  .jumbotron
+  .jumbotron.jumbotron-fluid-bg
     .container.text-center
       h1 Isaac Perper
       p Ride the wave.
+
+  .jumbotron.jumbostron-fluid(style="background-color: #607d8b57; color: black")
+    .container.text-center(style="margin-top:-20px")
+      h1#about
+        span.badge.badge-pill.badge-info About Me
+    .container-fluid(style="margin-top:30px")
+      .row
+        .col-md-1
+          .row
+        .col-md-5
+          .row
+            .col-sm-12.text-center
+              img.img-fluid.rounded-circle.mx-auto.img-capped(src="../images/isaac_mit.jpg" alt="Cinque Terre")
+          .row
+            .col-sm-12.text-center(style="margin-top:10px")
+              h3 Robots. Design. Automation.
+        .col-md-6.vertical-align
+          div
+            center
+              h4 MIT | Mechanical Engineering and Robotics (2A-6)
+            .text-justify
+              p(style="margin-bottom:0") I'm an engineer from the Bay Area who's always had a passion for designing and building hands-on projects.  Right now I'm most interested in computer vision, mostly as it applies to robotics and industrial automation, and I've also worked on everything from rockets to drones to food delivery. I'm a midfielder on the MIT Varsity Soccer Team and when I'm home I enjoy everything California has to offer: surfing, biking, hiking, and skiing.
+              center
+
   .container-fluid.bg-3.text-center
-    h3 Some of my Work
+    h3(style="padding: 1rem")#projects Projects
     br
     .row
-      .col-sm-3
+      .col-sm-4
         p Some text..
         img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-      .col-sm-3
+      .col-sm-4
         p Some text..
         img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-      .col-sm-3
+      .col-sm-4
         p Some text..
         img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-      .col-sm-3
-        p Some text..
-        img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-  br
-  .container-fluid.bg-3.text-center
-    .row
-      .col-sm-3
-        p Some text..
-        img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-      .col-sm-3
-        p Some text..
-        img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-      .col-sm-3
-        p Some text..
-        img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-      .col-sm-3
-        p Some text..
-        img.img-responsive(src='https://placehold.it/150x80?text=IMAGE' style='width:100%' alt='Image')
-
