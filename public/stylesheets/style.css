@@ -25,6 +25,12 @@
     align-items: center;
 }
 
+.container-bg{
+  background-color: #009aa2d4;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .img-capped{
   max-width: 60%
 }
@@ -33,4 +39,8 @@
   .img-capped{
     max-width: 50%
   }
+}
+
+.col-sm-4{
+  padding-bottom: 10px 
 }

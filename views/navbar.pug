@@ -11,9 +11,10 @@ nav.navbar.fixed-top.navbar-expand-sm.bg-light.navbar-light
 
   // Navbar links
   #collapsibleNavbar.collapse.navbar-collapse
-    ul.navbar-nav.mr-auto
-      li.nav-item
-        a(href='#')
+    ul.navbar-nav.mr-auto  <!-- Needed to add data-target and data-toggle so it would collapse automatically-->
+   
+      li.nav-item 
+        a(href='#') 
           .nav-link(data-toggle="collapse" data-target=".navbar-collapse.show") Home
       li.nav-item
         a(href='#about')
