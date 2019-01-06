@@ -26,77 +26,106 @@ block content
             center
               h4 MIT | Mechanical Engineering and Robotics (2A-6)
             .text-justify
-              p(style="margin-bottom:0") I'm an engineer from the Bay Area who's always had a passion for designing and building hands-on projects.  Right now I'm most interested in computer vision, mostly as it applies to robotics and industrial automation, and I've also worked on everything from rockets to drones to food delivery. I'm a midfielder on the MIT Varsity Soccer Team and when I'm home I enjoy everything California has to offer: surfing, biking, hiking, and skiing.
-              center
+              p(style="margin-bottom:0") I'm an engineer from the Bay Area who has always had a passion for designing and building hands-on projects.  Right now I'm most interested in computer vision, mostly as it applies to robotics and industrial automation. Previously, I've worked on everything from rockets to drones to food delivery. I'm a midfielder on the MIT Varsity Soccer Team and when I'm home I enjoy everything California has to offer: surfing, biking, hiking, and skiing.
+            br
+            left
+              h5 Skills
+            .text-justify
+              p Leadership | Teamwork | C++ | Python | Prototyping | CAD | Machining | Arduino | Linux
+              
 
-  .container-fluid.bg-3.text-center(style="background-color:#449bf9f0")
+  .container-fluid.text-center(style="background-color:#90aac7")
     h1(style="padding: 1rem")#projects 
       span.badge.badge-pill.badge-warning Portolio
     br
-    .row
-      .col-sm-4
-        h4 Safe Picker: 2019
-        img.img-fluid(src='http://google.com' alt='Image')
-      .col-sm-4
-        h4 Food Delivery: 2018
-        img.img-fluid(src='http://google.com' alt='Image')
-      .col-sm-4
-        h4 MIT REx Vehicle - Vision: Summer 2018
-        img.img-fluid(src='http://google.com' alt='Image')
-      
-    br
-    .row
-      .col-sm-4
-        h4 Medical Drone Delivery: 2018
-        img(src='http://google.com' style='width:100%' alt='Image')
-      .col-sm-4
-        a(href="/power-supply")
-        h4 Hobby Power Supply: Spring 2016
-        img.img-fluid(src='../images/front_power_supply.png' style='width:100%' alt='Image')
-      .col-sm-4
-        h4 3D Color Wave: Summer 2015-2016
-        img.img-fluid(src='../images/front_color_wave.png' style='width:100%' alt='Image')
-    br
     .row.text-center
-      .col-sm-4
-        h4 TARC Rocket: 2015-2016
-        img(src='../images/rocket_top.png' style='width:100%' alt='Image')
-      .col-sm-4
-        h4 Wood Floor Lamp: Summer 2015
-        img.img-fluid(src='../images/front_floor_lamp.png' style='width:100%' alt='Image')
-      .col-sm-4
-        h4 Dodecahedron Lamp: 2012-2014
-        img.img-fluid(src='../images/dodec_lamp.png' style='width:100%' alt='Image')
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/power-supply/power-square.png')")
+            h4 Food Delivery: Winter 2018
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/REx/REx-vehicle-square.jpg')")
+            h4 MIT REx Vehicle - Vision: Summer 2018
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/astral/astral-square.png')")
+            h4 Medical Drone Delivery: 2018
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/power-supply/power-square.png')")
+            h4 Hobby Power Supply: Spring 2016
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/color-wave/color_wave-square.png')")
+            h4 3D Color Wave: 2015
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/rocket/rocket_top-square.png')")
+            h4 TARC Rocket: 2015-2016
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/floor-lamp/floor-lamp-square.png')")
+            h4 Wood Floor Lamp: 2015
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/speaker/speaker-square.png')")
+            h4 BT Speaker: 2014
+      .col-sm-3
+        a.thumbnail(href='temp_project')
+          .frontpage_square(style="background-image: url('../images/dodec/dodec-square.png')")
+            h4 Dodecahedron Lamp: 2012
+      
+    //- 
+      br
+      .row
+        .col-sm-4.card
+          img.img-fluid.card-image-bottom(src='http://google.com' alt='Card image cap')
+          .card-body
+            h4.card-text 
+
+        .col-sm-4.card
+          .card-body
+            h4.card-text 
+          img.img-fluid.card-image-bottom(src='' alt='Card image cap')
+
+        .col-sm-4.card
+          .card-body
+            h4.card-text 
+          img.img-fluid.card-image-bottom(src='../images/front_color_wave.png' alt='Card image cap')
+                
+      br
+      .row.text-center
+        .col-sm-4.card
+          .card-body
+            h4.card-text 
+          img.img-fluid.card-image-bottom(src='../images/rocket_top.png' alt='Card image cap')
+
+        .col-sm-4.card
+          .card-body
+            h4.card-text 
+          img.img-fluid.card-image-bottom(src='../images/front_floor_lamp.png' alt='Card image cap')
+
+            h4.card-text Dodecahedron Lamp: 2012-2014
+          img.img-fluid.card-image-bottom(src='../images/dodec_lamp.png' alt='Card image cap')
+
 
   .container-fluid.container-bg.bg-3.text-center(style="background-color: #ffc74adb")
     h1(style="padding: 1rem")#contact 
       span.badge.badge-pill.badge-success Contact
     br
     .row
-      .col-sm-6
-      .col-sm-6
-        dl.row
-          dt.col-sm-2.text-right
-            h3.fas.fa-mail-bulk
-            br
-            br
-            h3.fas.fa-phone
-            br
-            br
-            h3.fab.fa-github
-            br
-            br
-            h3.fab.fa-linkedin
-            br
-
-          dd.col-sm-10.text-left
-            h4 isaac D0T perper AT gmail DOT com
-            br
-            h4 415 308 2Seven9I
-            br
-            h4 
-              a(href="https://github.com/iperper") iperper
-            br
-            h4
-              a(href="http://www.linkedin.com/in/isaac-perper-01") isaac-perper-01
-            br
+      .col-sm-12
+          h3.fas.fa-mail-bulk &nbsp isaac D0T perper AT gmail DOT com
+          br
+          br
+          h3.fas.fa-phone 415 308 2Seven91
+          br
+          br
+          a(href="https://github.com/iperper") 
+            h3.fab.fa-github &nbsp iperper 
+          br
+          br
+          a(href="http://www.linkedin.com/in/isaac-perper-01")
+            h3.fab.fa-linkedin &nbsp isaac-perper-01
+          br

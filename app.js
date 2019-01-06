@@ -6,6 +6,7 @@ var logger = require('morgan');
 var stylus = require('stylus');
 
 var indexRouter = require('./routes/index');
+// var portfolioRouter = require('./routes/portfolio') Not working put it in Index for now
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+// app.use('/temp_project', portfolioRouter)  Not working put it in index for now
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
