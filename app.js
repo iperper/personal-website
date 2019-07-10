@@ -14,11 +14,14 @@ setInterval(function() {
 var indexRouter = require('./routes/index');
 // var portfolioRouter = require('./routes/portfolio') Not working put it in Index for now
 var usersRouter = require('./routes/users');
+// var portfolioRouter = require('./routes/portfolio'); Not working
 
 var app = express();
+app.locals.basedir = __dirname; // needed to use absolute paths in pug files
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', [path.join(__dirname, 'views')]);
+					// path.join(__dirname, 'views/projects/')]);
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
@@ -30,7 +33,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-// app.use('/temp_project', portfolioRouter)  Not working put it in index for now
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

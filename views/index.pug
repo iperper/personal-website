@@ -6,9 +6,10 @@ block content
       h1 Isaac Perper
       p Ride the wave.
 
-  .jumbotron.jumbotron-fluid(style="background-color: #607d8b57; color: black")
-    .container.text-center(style="margin-top:-20px")
-      h1#about
+  .jumbotron.jumbotron-fluid(style="background-color: #607d8b57; color: black; padding-top: 1rem")
+    .container.text-center
+      a.anchor#about
+      h1
         span.badge.badge-pill.badge-info About Me
     .container-fluid(style="margin-top:30px")
       .row
@@ -33,10 +34,10 @@ block content
             .text-justify
               p Leadership | Teamwork | C++ | Python | Prototyping | CAD | Machining | Arduino | Linux
               
-
-  .container-fluid.text-center(style="background-color:#90aac7")
-    h1(style="padding: 1rem")#projects 
-      span.badge.badge-pill.badge-warning Portolio
+  .container-fluid.text-center(style="background-color:#90aac7; padding-top: 1rem")
+    a.anchor#projects 
+    h1(style="padding-top: 0rem")
+      span.badge.badge-pill.badge-warning Portfolio
     br
     .row.text-center
       .col-sm-3
@@ -52,19 +53,19 @@ block content
           .frontpage_square(style="background-image: url('../images/astral/astral-square-small.png')")
             h4 Medical Drone Delivery: 2018
       .col-sm-3
-        a.thumbnail(href='temp_project')
+        a.thumbnail(href='projects/power_supply')
           .frontpage_square(style="background-image: url('../images/power-supply/power-square-small.png')")
             h4 Hobby Power Supply: Spring 2016
       .col-sm-3
-        a.thumbnail(href='temp_project')
+        a.thumbnail(href='projects/colorwave')
           .frontpage_square(style="background-image: url('../images/color-wave/color_wave-square-small.png')")
             h4 3D Color Wave: 2015
       .col-sm-3
-        a.thumbnail(href='temp_project')
+        a.thumbnail(href='projects/rocket')
           .frontpage_square(style="background-image: url('../images/rocket/rocket_top-square-small.png')")
             h4 TARC Rocket: 2015-2016
       .col-sm-3
-        a.thumbnail(href='temp_project')
+        a.thumbnail(href='projects/floor_lamp')
           .frontpage_square(style="background-image: url('../images/floor-lamp/floor-lamp-square-small.png')")
             h4 Wood Floor Lamp: 2015
       .col-sm-3
@@ -72,60 +73,27 @@ block content
           .frontpage_square(style="background-image: url('../images/speaker/speaker-square-small.png')")
             h4 BT Speaker: 2014
       .col-sm-3
-        a.thumbnail(href='temp_project')
+        a.thumbnail(href='projects/dodec_lamp')
           .frontpage_square(style="background-image: url('../images/dodec/dodec-square-small.png')")
             h4 Dodecahedron Lamp: 2012
       
-    //- 
-      br
-      .row
-        .col-sm-4.card
-          img.img-fluid.card-image-bottom(src='http://google.com' alt='Card image cap')
-          .card-body
-            h4.card-text 
-
-        .col-sm-4.card
-          .card-body
-            h4.card-text 
-          img.img-fluid.card-image-bottom(src='' alt='Card image cap')
-
-        .col-sm-4.card
-          .card-body
-            h4.card-text 
-          img.img-fluid.card-image-bottom(src='../images/front_color_wave.png' alt='Card image cap')
-                
-      br
-      .row.text-center
-        .col-sm-4.card
-          .card-body
-            h4.card-text 
-          img.img-fluid.card-image-bottom(src='../images/rocket_top.png' alt='Card image cap')
-
-        .col-sm-4.card
-          .card-body
-            h4.card-text 
-          img.img-fluid.card-image-bottom(src='../images/front_floor_lamp.png' alt='Card image cap')
-
-            h4.card-text Dodecahedron Lamp: 2012-2014
-          img.img-fluid.card-image-bottom(src='../images/dodec_lamp.png' alt='Card image cap')
-
-
-  .container-fluid.container-bg.bg-3.text-center(style="background-color: #ffc74adb")
-    h1(style="padding: 1rem")#contact 
+  .container-fluid.container-bg.bg-3.text-center(style="background-color: #ffc74adb; padding-top: 1rem")
+    h1(style="padding-top: 0rem")#contact 
       span.badge.badge-pill.badge-success Contact
     br
     .row
       .col-sm-12
-          h3.fas.fa-mail-bulk &nbsp isaac D0T perper AT gmail DOT com
+          h5.fas.fa-mail-bulk &nbsp isaac.perper AT gmail DOT com
           br
           br
-          h3.fas.fa-phone 415 308 2Seven91
+          h5.fas.fa-phone 415 308 2Seven91
           br
           br
           a(href="https://github.com/iperper") 
-            h3.fab.fa-github &nbsp iperper 
+            h5.fab.fa-github &nbsp iperper 
           br
           br
           a(href="http://www.linkedin.com/in/isaac-perper-01")
-            h3.fab.fa-linkedin &nbsp isaac-perper-01
+            h5.fab.fa-linkedin &nbsp isaac-perper-01
+          br
           br
