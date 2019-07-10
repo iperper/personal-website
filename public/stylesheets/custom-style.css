@@ -71,3 +71,13 @@
 .frontpage_square img{
   position: absolute;
 }
+
+
+/*Moves the anchor location up slightly to avoid navbar blocking content*/
+
+a.anchor {
+    display: block;
+    position: relative;
+    top: -65px;
+    visibility: hidden;
+}
