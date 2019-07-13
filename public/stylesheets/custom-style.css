@@ -81,3 +81,8 @@ a.anchor {
     top: -65px;
     visibility: hidden;
 }
+
+figure.project{
+  max-width: 500px;
+  width=70%;
+}
