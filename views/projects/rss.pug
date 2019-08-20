@@ -1,0 +1,30 @@
+extends ../project
+
+block markdown
+	h2.strong 6.141 RSS: Spring 2019
+	p I worked with five classmates to program a standardized RC racecar to travel quickly and autonomously around the MIT Stata Building basement.
+	.row.text-center
+		.col-sm-6
+			img.img-fluid.mx-auto.img-capped(src="/images/rss/stata_loop-square.png")
+		.col-sm-6
+			img.img-fluid.mx-auto.img-capped(src="/images/rss/car-square.jpg")
+
+	p <strong> We were able to acheive the fastest time of 33.54 seconds, which was 0.16 seconds faster than 2nd place. </strong>  Please see some of the lab reports written collectively by the team below for more details.  The Final Challenge was a project separate from the race, and our team used imitation learning to train a vehicle to travel around the basement solely on camera data. 
+
+	.btn-group.btn-group-justified(role='group' aria-label='...')
+		button.btn.btn-primary.tablinks(onclick="openLab(event, 'Lab3')") Lab 3: Wall Following
+		button.btn.btn-primary.tablinks(onclick="openLab(event, 'Lab5')") Lab 5: Localization
+		button.btn.btn-primary.tablinks(onclick="openLab(event, 'Lab6')") Lab 6: Trajectory Following
+		button.btn.btn-primary.tablinks(onclick="openLab(event, 'Final')") Final Challenge: Imitation Learning
+
+	br
+	br
+
+	#Lab3.tabcontent
+		include:markdown-it(html) /public/projects_md/rss_lab3.md
+	#Lab5.tabcontent
+		include:markdown-it(html) /public/projects_md/rss_lab5.md
+	#Lab6.tabcontent
+		include:markdown-it(html) /public/projects_md/rss_lab6.md
+	#Final.tabcontent
+		include:markdown-it(html) /public/projects_md/rss_final.md
