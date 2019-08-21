@@ -62,7 +62,12 @@ After observing the lack of robustness in our approach, we decided on a new algo
 
  We then calculated the steering angle to be the single weighted average of angles, instead of pixel locations, using only the same pixels that met the 20% threshold and restricted vertical frame as described in section 2.1.2. The weights were defined as the exponential of the pixel's heatmap value, while the average over the corresponding angle values (in radians). We used an exponential function to intensify weight the high-pixel values of the heatmap. This generated steering angle was inputted as a steering command to allow the racecar to navigate through the gate. A successful gate navigation can be seen in Video 1.
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/image2.gif" width =80% class = "center" style="padding-bottom:0.1em;" />   Video 1: The car uses the heatmap generated from the camera view and a calculated steering angle to drive towards and through the gate. </div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/image2-small.webm" type="video/webm">
+		<source src="/images/rss/final/image2-small.mp4" type="video/mp4">
+	</video>
+	Video 1: The car uses the heatmap generated from the camera view and a calculated steering angle to drive towards and through the gate. </div>
 
 Using deep learning for gate detection and navigation is a relatively novel approach, and we found it to have both strengths and weaknesses. Our CNN was accurate in determining whether or not there was a gate in the camera frame, which would have been much harder if we had used lidar scans to attempt to classify objects. On the other hand, it was difficult to generate a steering angle from the heatmaps that would work in multiple circumstances; we were not able to drive through more than one consecutive gate, and only certain starting positions enabled us to drive through the gate successfully.
 
@@ -78,7 +83,12 @@ To address this, we turned to machine learning - specifically, we performed imit
 
 To become familiar with how PilotNet reacts to changes in training data and other training parameters, we began our experiments in a simulated driving environment in the Udacity Self-Driving Car Simulator. We began by collecting four full laps of driving, during which the commanded steering angle is recorded along with left, right and center images from the perspective of the vehicle in the simulator.  Video 2 illustrates the simulated vehicle being driven manually on the track.
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/sim_training_sped.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Video 2: The car being manually driven around the track.  The goal of these training runs was to gather steering angle and camera view pairs that the model could learn to “imitate” when confronted with similar camera views. </div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/sim_training_sped-trimmed.webm" type="video/webm">
+		<source src="/images/rss/final/sim_training_sped-trimmed.mp4" type="video/mp4">
+	</video>
+	Video 2: The car being manually driven around the track.  The goal of these training runs was to gather steering angle and camera view pairs that the model could learn to “imitate” when confronted with similar camera views. </div>
 
 Once data was collected, we began the training process. An important part of training is data augmentation. If a model were to be trained solely on the exact data we collected, the result would not be robust enough to small changes in conditions, such as the sun shining at a different angle or being on a different side of the track.  Thus, we introduced randomly selected augmentations that essentially create formulated noise in the data.  For the simulation data, this included increasing the brightness of the image, changing the gamma values, adding random shadows, and translating the image in various directions as seen in Figure 6. When our model subsequently encountered these conditions during deployment, it was better able to respond appropriately thanks to this augmentation.
 
@@ -86,7 +96,12 @@ Once data was collected, we began the training process. An important part of tra
 
  The translation augmentation was an especially important transformation for this autonomous driving task because it enabled the model to learn what to do at a variety of locations on the track; the original data was taken from the car's location being close to the center the whole time, which is not always true during deployment. Our augmented dataset was used to train on the PilotNet model. We first tried training on 20 epochs of 300 images each, which led to a test accuracy of 78.7%. This model performed well on straightaways in the simulator, but failed on the first corner. After several iterations of data collection and training, the model eventually was able to complete half a lap as shown in Video 3.
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/sim_auto_sped.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Video 3: An autonomous run of the track.  The model was able to traverse half the path, including a sharp turn and the bridge, before leaving the track. More data at the failed turn is needed to continue further along the track. </div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/sim_auto_sped-faster.webm" type="video/webm">
+		<source src="/images/rss/final/sim_auto_sped-faster.mp4" type="video/mp4">
+	</video>
+	Video 3: An autonomous run of the track.  The model was able to traverse half the path, including a sharp turn and the bridge, before leaving the track. More data at the failed turn is needed to continue further along the track. </div>
 
 #### 2.1.3.2 Race Car: Table Path
 
@@ -96,13 +111,24 @@ For the data to be useful to train a model for a moving vehicle, all of images i
 
 After creating and training a model using the PilotNet architecture, running for 5 epochs at  800 steps per epoch,  we validated the model on a test set and then implemented it on the on the table (Video 4).
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/circle_working.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Video 4: The car successfully drives around a classroom table using imitation learning. </div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/circle_working-faster.webm" type="video/webm">
+		<source src="/images/rss/final/circle_working-faster.mp4" type="video/mp4">
+	</video>
+	Video 4: The car successfully drives around a classroom table using imitation learning. </div>
 
 #### 2.1.3.3 Race Car: Stata Basement Loop
 
 After a successful implementation of the model trained to circle a table, we began collecting data for the entire stata basement loop. Initially, our collected dataset was simply the result of three continuous laps manually driven around the loop. The training data and training methods for the loop was of the same format as described in section 2.1.3.2.
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/image11.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Video 5: Although the implemented model followed straight paths as desired, it was unable to make turns properly.</div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/image11-trimmed.webm" type="video/webm">
+		<source src="/images/rss/final/image11-trimmed.mp4" type="video/mp4">
+	</video>
+	Video 5: Although the implemented model followed straight paths as desired, it was unable to make turns properly.
+</div>
 
 An apparent flaw in the trained model was that the model was able to follow straight paths in the long hallways very well, but failed to make even a single turn properly, as seen in Video 5. This was because our training data overwhelmingly consisted of examples in which the car drove straight, and our model was able to achieve low error without learning to take turns at all. To solve this issue, we collected more data for the turns and filtered out some of the straight path data to provide the car with a more uniform distribution of turning angles. This improved our models ability to make turns at all, but it was still unable to make the turns consistently.
 
@@ -144,8 +170,19 @@ Our best performing gate detection model has a training accuracy of 93%, which i
 
 We achieved varying results when evaluating the real world application of gate detection/navigation on the racecar. The racecar was usually able to find its way towards the gate, but often crashed into the leg of the gate instead of navigating through it: both scenarios are seen in Videos 6 and 7. 
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/image2.gif" width =80% class = "center" style="padding-bottom:0.1em;" /> </div>
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/gate_not_working_1.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Videos 6 and 7: A successful and unsuccessful attempt to drive through the gate autonomously using the same model.</div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/image2-small.webm" type="video/webm">
+		<source src="/images/rss/final/image2-small.mp4" type="video/mp4">
+	</video>
+</div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/gate_not_working_1.webm" type="video/webm">
+		<source src="/images/rss/final/gate_not_working_1.mp4" type="video/mp4">
+	</video>
+	Videos 6 and 7: A successful and unsuccessful attempt to drive through the gate autonomously using the same model.
+</div>
 
 Less than half the time, the racecar was not able to navigate towards the gate at all. This occured when our heatmap picked up on parts of the environment that were not the gate. Ultimately, our model relies on deciding if the image has a gate in it by detecting the columns of the gate (Figure 10). As soon as a person or other column-like object was detected in the camera view, the model (often incorrectly) indicated that the column object was a gate. This improper identification resulted in an inaccurate steering angle away from the actual gate.
 
@@ -165,11 +202,23 @@ The initial model performance was evaluated based on both the comparison between
 
 In the first simplified training environment, which involved circling a single table, our model was able to successfully traverse the circular path because of its simplicity, but more refinement to our training algorithm was needed in order to train a model on the stata basement loop.
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/circle_working.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Video 8: Implementation of a trained model autonomously traversing a circular path around a table in a Stata basement classroom. </div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/circle_working-faster.webm" type="video/webm">
+		<source src="/images/rss/final/circle_working-faster.mp4" type="video/mp4">
+	</video>
+	Video 8: Implementation of a trained model autonomously traversing a circular path around a table in a Stata basement classroom. 
+</div>
 
 For the second model, which navigated the entire stata basement loop, the improvements to the training algorithm mentioned in Section 2.1.3.3 resulted in a very robust training model that was able to adequately traverse the Stata basement loop.
 
-<div style="width:image width px; font-size:90%; text-align:center;"><img src="/images/rss/final/stata_loop_working.gif" width =80% class = "center" style="padding-bottom:0.1em;" />    Video 9: The final trained model was able to successfully navigate the entire stata basement loop relying solely on the input images from the car's three webcams. </div>
+<div style="width:image width px; font-size:90%; text-align:center;">
+	<video class="center" width=80% autoplay loop>
+		<source src="/images/rss/final/stata_loop_working-low_qual.webm" type="video/webm">
+		<source src="/images/rss/final/stata_loop_working-low_qual.mp4" type="video/mp4">
+	</video>
+	Video 9: The final trained model was able to successfully navigate the entire stata basement loop relying solely on the input images from the car's three webcams. 
+</div>
 
 ## 4 Learned
 
