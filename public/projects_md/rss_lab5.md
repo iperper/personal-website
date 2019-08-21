@@ -137,7 +137,11 @@ We gather empirical data on the performance of our localization algorithm in sim
 
 - Noise-free scenario: Evaluating localization in this setting allows us to verify the  performance of the system in ideal conditions. We use the joystick to drive the car around the entire stata basement map in simulation, and plot the estimated x, y, and angle pose variables against the ground truth values in figure 3.1:
 
-<img src="/images/rss/lab5/simulation_rviz.gif" alt="simulation gif">
+<video width=50% autoplay loop>
+	<source src="../images/rss/lab5/simulation_rviz-trimmed.webm" type="video/webm">
+	<source src="../images/rss/lab5/simulation_rviz-trimmed.mp4" type="video/mp4">
+</video>
+
 <img src="/images/rss/lab5/figure_4_1.png" alt="Figure 4.1">
 
 
@@ -173,17 +177,35 @@ To evaluate whether the car was localizing properly in the Stata Basement, we us
 
 In order to test the convergence of the estimated location of the car, we set the car in an initial, incorrect pose and set the velocity to zero. We did this to test whether the sensor model would be able to update the particle positions and estimate a best pose without any significant change in odometry data. Next, we drove the robot to see if convergence would be faster or slower compared to the unmoving robot. We found that at standstill, the pose did start converging toward the actual position (we visually examined the robot and simulation environment to determine this), but driving the robot helped it to converge faster, as seen in figure 3.4. These results mean that having changing exteroceptive information and noise, and therefore better possible poses, leads to a faster convergence.
 
+<video autoplay loop>
+	<source src="../images/rss/lab5/converge_gif.webm" type="video/webm">
+	<source src="../images/rss/lab5/converge_gif.mp4" type="video/mp4">
+</video>
 
-<img src="/images/rss/lab5/converge_gif.gif" alt="converge gif">
 Figure 3.4: Initially the pose drifts to better line up the LIDAR data with the map walls without moving the racecar. Once the racecar is driven, the LIDAR data coverges to the map walls much quicker and more accurately.
 
 
 We tested the scan data of the car at two different speeds: 1 meter per second (mps) and 2.5mps. At the higher speed, the scan data does not always correspond to what the estimated pose is; this is especially apparent during sharp changes in angle, like when turning. The videos of the car localizing at 1mps and 2.5mps are shown in figure 3.5. The lower performance at high speeds means that our car is unable to estimate reasonable possible poses in the motion model when the odometry data changes drastically in a short amount of time. We could try adding more noise to our motion model, or possibly make noise dependent on velocity.
 
+<video width=45% autoplay loop>
+	<source src="/images/rss/lab5/slow_rviz.webm" type="video/webm">
+	<source src="/images/rss/lab5/slow_rviz.mp4" type="video/mp4">
+</video>
 
-<img src="/images/rss/lab5/slow_rviz.gif" alt="normal gif"> | <img src="/images/rss/lab5/normal_gif.gif" alt="normal real gif">
+<video width=45% autoplay loop>
+	<source src="/images/rss/lab5/normal_gif.webm" type="video/webm">
+	<source src="/images/rss/lab5/normal_gif.mp4" type="video/mp4">
+</video>
 
-<img src="/images/rss/lab5/fast_rviz_gif.gif" alt="fast gif"> | <img src="/images/rss/lab5/fast_gif.gif" alt="fast real gif">
+<video width=45% autoplay loop>
+	<source src="/images/rss/lab5/fast_rviz_gif.webm" type="video/webm">
+	<source src="/images/rss/lab5/fast_rviz_gif.mp4" type="video/mp4">
+</video>
+
+<video width=45% autoplay loop>
+	<source src="/images/rss/lab5/fast_gif.webm" type="video/webm">
+	<source src="/images/rss/lab5/fast_gif.mp4" type="video/mp4">
+</video>
 
 Figure 3.5: The first two videos show the racecar and the corresponding rviz environment when driving the racecar in the Stata basement at 1 mps. The last two videos show the racecar and the corresponding rviz environment when driving the racecar in the Stata basement at 2.5 mps.
 
