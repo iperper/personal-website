@@ -67,8 +67,8 @@ The main design choice we made in our pure pursuit implementation was the select
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/hand.webm" type="video/webm">
-		<source src="../images/rss/lab6/hand.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/hand.webm" type="video/webm">
+		<source src="/images/rss/lab6/hand.mp4" type="video/mp4">
 	</video>
 	Video 1: We demonstrate our pure pursuit controller following a hand-drawn piecewise linear trajectory with a look-ahead distance of 2.0 meters. We observed large Cross Track Error for at this look-ahead distance; this is because the car steers based on a section of the path far in the future and ignores closer path points.
 </div>
@@ -99,14 +99,14 @@ In simulation we tested both algorithms using user-defined start and end point m
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/astar2pointspath.webm" type="video/webm">
-		<source src="../images/rss/lab6/astar2pointspath.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/astar2pointspath.webm" type="video/webm">
+		<source src="/images/rss/lab6/astar2pointspath.mp4" type="video/mp4">
 	</video>
 </div>
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/rrtstar_two_points.webm" type="video/webm">
-		<source src="../images/rss/lab6/rrtstar_two_points.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/rrtstar_two_points.webm" type="video/webm">
+		<source src="/images/rss/lab6/rrtstar_two_points.mp4" type="video/mp4">
 	</video>
 	Videos 2 and 3: The top video shows the path planned between two points by our search-based path planning algorithm A*, represented by green dots along the generated path. The bottom video similarly shows the path planned between two points by our sample-based path planning algorithm RRT*, with the green lines representing the generated path.
 </div>
@@ -115,14 +115,14 @@ In Videos 4 and 5, a demonstration of the simulated car following these paths us
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/image5.webm" type="video/webm">
-		<source src="../images/rss/lab6/image5.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/image5.webm" type="video/webm">
+		<source src="/images/rss/lab6/image5.mp4" type="video/mp4">
 	</video>
 </div>
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/image10.webm" type="video/webm">
-		<source src="../images/rss/lab6/image10.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/image10.webm" type="video/webm">
+		<source src="/images/rss/lab6/image10.mp4" type="video/mp4">
 	</video>
 	Videos 4 and 5: The top video shows the path planned by our search-based path planning algorithm A* being followed by the simulated racecar using our pure pursuit algorithm. The bottom video similarly shows the path planned by our sample-based path planning algorithm RRT*. The green point markers in both videos show the points chosen by the algorithms to generate their respective paths. The green lines show the line segment representations of the paths.
 </div>
@@ -149,16 +149,16 @@ Unfortunately, the RViz visualization froze at about halfway through the video i
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/image4.webm" type="video/webm">
-		<source src="../images/rss/lab6/image4.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/image4.webm" type="video/webm">
+		<source src="/images/rss/lab6/image4.mp4" type="video/mp4">
 	</video>
 	Video 6: The RViz visualization of the car completing the stata basement loop. The RViz freezes when the racecar reaches the bottom right corner of the map, but up until then it is easy to distinguish the oscillations of the car around the path even in simulation. This video is at two times speed.
 </div>
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/image1-fast.webm" type="video/webm">
-		<source src="../images/rss/lab6/image1-fast.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/image1-fast.webm" type="video/webm">
+		<source src="/images/rss/lab6/image1-fast.mp4" type="video/mp4">
 	</video>
 	Video 7: A video of the racecar navigating the full stata basement loop based on the A* generated path. The
 	 car oscillates around the path, but the car does not run into any obstacles while driving the loop. This video is at 6 times speed.
@@ -175,16 +175,16 @@ Since we used a faster speed then we had planned for our stata basement loop tes
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/image13-fast.webm" type="video/webm">
-		<source src="../images/rss/lab6/image13-fast.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/image13-fast.webm" type="video/webm">
+		<source src="/images/rss/lab6/image13-fast.mp4" type="video/mp4">
 	</video>
 	Video 8: A video showing the RViz visualization of the racecar following a path for a portion of the Stata basement. The localization representation of the racecar in RViz follows the path precisely and only diverges slightly when turning corners.
 </div> 
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="../images/rss/lab6/image12-fast.webm" type="video/webm">
-		<source src="../images/rss/lab6/image12-fast.mp4" type="video/mp4">
+		<source src="/images/rss/lab6/image12-fast.webm" type="video/webm">
+		<source src="/images/rss/lab6/image12-fast.mp4" type="video/mp4">
 	</video>
 	Video 9: The video of the racecar following a corresponding path to the path in the Video 8 simulation. The video confirms the precise following of the generated path as well as the absence of oscillations around the path.
 </div>
