@@ -1,0 +1,7 @@
+extends ../project
+
+block markdown
+    // Could put generic project content here in future
+    include:markdown-it(html) /public/projects_md/nps_covid_map.md
+    iframe(src='/images/NPSCovidMap/NPSCovidMap_all.html' name='National Park Closures Map' width='100%' height='600px')
+    //- include ../../public/images/NPSCovidMap/NPSCovidMap_all.html
