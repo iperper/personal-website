@@ -13,8 +13,7 @@ setInterval(function() {
 
 var indexRouter = require('./routes/index');
 // var portfolioRouter = require('./routes/portfolio') Not working put it in Index for now
-var usersRouter = require('./routes/users');
-// var portfolioRouter = require('./routes/portfolio'); Not working
+var dbRouter = require('./routes/db');
 
 var app = express();
 app.locals.basedir = __dirname; // needed to use absolute paths in pug files
@@ -32,7 +31,7 @@ app.use(stylus.middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/db', dbRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
