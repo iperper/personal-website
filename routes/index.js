@@ -8,7 +8,6 @@ const VisitorDB = require('../db/VisitorDB');
 router.get('/', function(req, res, next) {
   res.render('index', {title: 'Isaac Perper'});
   VisitorDB.updateProject('index');
-//   ADD PLUS TO HOME COUNT
 });
 
 router.get('/temp_project', function(req, res, next) {

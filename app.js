@@ -8,7 +8,7 @@ var stylus = require('stylus');
 //Keep website awake
 var http = require("http");
 setInterval(function() {
-    http.get("http://perper-website.herokuapp.com");
+    http.get("http://perper-website.herokuapp.com/db/visitor_count");
 }, 300000); // every 5 minutes (300000)
 
 var indexRouter = require('./routes/index');

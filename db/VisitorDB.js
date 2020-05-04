@@ -69,6 +69,24 @@ class VisitorDB {
             throw e;
         }
     }
+    
+    /**
+     * 
+     * Used to decrement visitor count, especially for the sleep-prevention
+     * calls.
+     */
+
+    static async decrementProject(proj_name){
+        try {
+            // console.log("Incrementing project database");
+            let response = await database.createQuery(`UPDATE visitors \
+                                                SET count = count - 1 \
+                                                WHERE name = '${proj_name}';`);
+            return response
+        } catch (e) {
+            throw e;
+        }
+    }
 
     static async updateProject(proj_name){
         try {
