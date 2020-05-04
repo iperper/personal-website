@@ -3,6 +3,7 @@ const { Client } = require('pg');
 const config = {
     connectionString: process.env.DATABASE_URL,
     // SSL should be false for local debuging
+    // SSL also is false for heroku Free (no SSL)
     ssl: false
 };
 
