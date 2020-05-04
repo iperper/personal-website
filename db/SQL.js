@@ -3,7 +3,7 @@ const { Client } = require('pg');
 const config = {
     connectionString: process.env.DATABASE_URL,
     // SSL should be false for local debuging
-    ssl: true
+    ssl: false
 };
 
 class Database {
