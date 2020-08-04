@@ -1,0 +1,741 @@
+﻿<meta charset="utf-8" emacsmode="-*- markdown -*-">
+
+
+
+
+Summary
+=======================================================================
+A fresh take on a classic, our battleship innovates on the original game by allowing you to play with multiple players, and by implementing various new game mechanics, such as ships moving around, and different types of moves (this is explained in more depth in the game rules section). Game boards are stored on a server which users interact with through a user interface on the ESP32. The user’s place their ships, and shoot at each other’s boards, and modify their own boards using the ESP32’s user interface and the server makes sure that these moves are handled appropriately.
+
+
+Game Functionalities
+=======================================================================
+
+
+Game Rules
+-------------------------------------------------------------------------------
+Upon starting the game for the first time the player will be asked to sign in with their name and join a room. Rooms can contain up to 4 players. At least 2 players must be present for the first round to start.
+
+
+### Setup
+Before you begin playing the game you must set up your board. Each player has five ships (of lengths 5, 4, 3, 3, and 2) which they can place either vertically or horizontally on their 10x10 board, similar to a standard game of battleship. Along with placing a ship, a player may designate a rectangular path along which their ship will move at the end of every round (this will be explained more later). Every player also starts with 10 JanBucks which can be spent during their turn
+
+
+### Main Gameplay
+The main gameplay is made up of rounds which consist of three parts. At the beginning of each round, every player receives an additional 5 JanBucks.
+
+
+#### TURN: Every player currently in the game can choose to spend as many JanBucks as they want. 
+
+
+* Targeting Enemy Board: The user selects the enemy gameboard they want to shoot onto, and this board loads into full screen.  The board will display previous hits and misses from the user on that specific board, along with any additional visible squares due to active spy shots.
+
+
+* Looking at Personal Board: If you load your own board for healing or inspection, you will see all hits and misses from other enemies on your board.  You will also be able to select your ships by their ship ID to increase their health (see Heal).
+
+
+* Shooting (2JBs): Using the buttons, the user will select a specific coordinate on the enemy board to target (like normal battleship).
+
+
+* Spy (3JBs): Place a spy at a specified coordinate on the enemy board. If the specified coordinate is a ship, then the spy will sit at that point on the ship and reveal a 3x3 radius the next time this board is shot at. When the ship moves, the spy will be attached to the same point on the ship and as such will move along with the ship. If that point on the ship is hit with a damage shot (by you or by someone else) then the spy will no longer be active.
+
+
+* Move/Halt (1JB): You can select a ship on your own board to either move an extra step at the end of the round, or to not move at the end of the round. This may be advantageous if someone is shooting at your ship and expecting it to continue moving as usual.
+
+
+* Heal (5JBs): You select a ship on your own board, and can pay to increase the health.  The cost is per health point, and you can only restore a ship back up to full health.
+
+
+You may, of course, also choose not to spend all of your money and hold onto it for later rounds. Once every player has made their selection, the round continues to the next part.
+
+
+#### UPDATING
+
+
+* First, heals are applied. Then, all ship movements are applied to the board.  This could be pre-planned movements due to the ships going along their paths, or it could be due to the extra step/halt command that a user paid for.   After that, the players hit and spy moves are applied to each other’s game boards. 
+
+
+* Ship Hit Rewards:
+    * Every time you hit a ship, you receive 5 JanBucks.
+    * Spy shots do not receive any reward.
+
+
+#### POST-UPDATE
+After the update step, the leaderboards are updated, and the next round starts.
+
+
+### END GAME
+Once a player loses all of their ships they have lost and may no longer participate in the game. They will exit the room and may join a new room to play another game.
+
+
+### EDGE CASES: BOARD PLACEMENT
+When placing ships at the start of the game, no ships can overlap.  Additionally, the entire ship must be placed on the board, such that no part of the ship extends past the 10x10 grid.  For ships that have movement paths, the paths can overlap.  However, if multiple ships ever will intersect due to a move update, then the smaller ships will yield (stay put) to the bigger ship. These rules will be enforced during board setup.
+
+
+### EDGE CASES: SHOOTING
+* If multiple damage shots are targeted at the same location on another user’s board, either by multiple shots from a single user, or more commonly, multiple shots from multiple users in the game targeting that one board, each shot will receive an equal reward of 5 JBs.
+
+
+* If a spy shot is shot at the same location as a damage shot, the spy shot is considered damaged (or “unplaceable”), and it will have no effect.
+
+
+* If a spy shot is on a boat, and the location of the spy shot get’s hit at a later time by a damage shot, the spy shot also becomes deactivated.
+
+
+
+
+Video Demonstration
+-------------------------------------------------------------------------------
+A quick note on this video, we weren’t able to get the screens to match up with the faces properly so everyone’s ESP is shifted one left from their face.
+
+
+This is a quick demonstration of us playing together, there are a couple of cuts where not much interesting was happening.
+![Video Demonstration: https://youtu.be/1HF0oZj0VXw ](https://youtu.be/1HF0oZj0VXw )
+
+
+Design Challenges
+=======================================================================
+Game design
+-------------------------------------------------------------------------------
+One of the most challenging things very early on, was making decisions on the structure of the game. We had a lot of conversations about this and various iterations for how the game would be played. One of the earlier versions, for example, did not have anything like a room that individual games were played in but instead functioned more like a massive multiplayer game where everyone was a part of a single game and could attack anyone else. While this idea was exciting, when we discussed it we were able to come up with many complications such as when players would be allowed to attack other players, as well as numerous potential concurrency issues that led us to developing the game in the round-based format like we did.
+
+
+ESP32
+-------------------------------------------------------------------------------
+I certainly learned a lot from working on the user interface on the ESP32. Not only do I have a better understanding of C++, but also of the constraints of limited memory. Despite telling my teammates multiple times (wrongly) that I had run out of memory on the ESP, memory size actually never ended up being an issue. However, I did learn a lot about the way that scope is used in C++ and how if you try to get the value from a pointer that points to something that no longer exists, you will not get the value you think you have. I also finally learned what a stack overflow was, which I encountered after trying to copy large objects into parameters rather than passing pointers. After which I learned that referencing an object’s methods is not the same as referencing methods from an object’s pointer. I think it would have been very frustrating if I had not gotten so much useful information out of it.
+
+
+Server
+-------------------------------------------------------------------------------
+
+
+One of the biggest issues that we faced was how we would handle the server side. Initially, I thought (incorrectly) that we could just code up the game in a python file that would have a Game class and subsequent methods and sub methods that would handle the gameplay. However, we found out that the server would only let the python files run for a couple of seconds before killing them outright, so we couldn’t use a python file on the server for storing variables and information about people’s boards, turn orders, actions taken, etc. Therefore we would have to rely entirely on a database for storing variable values. This approach then made it a lot more difficult to debug since that meant either going to POSTMAN and entering strings of data there, or rewriting a local version of the server-side code that worked without an html request, since I was lot more used to being able to access all of the variables that I needed to control being in a python file. Debugging meant deleting databases, creating copies, making sure that we had the right SQL format, converting from strings back to the proper data format in the server file. This issue of debugging was particularly felt when we were testing out the ship movement function, that would update the positions of every player’s ships every round of the game. Our test cases had bugs in them and so once we started testing, we were fixing code to get results on faulty tests and then had to revert back to different versions. Also the way the data was being stored on the ESP, then converted to strings because of the SQL formatting and then reconverting that into dictionaries for simple Python usage became a huge pain. Another issue that we had was regarding SQL commands. Sometimes the response would be none and this made bugs incredibly difficult to find as we didn’t know if we were making the right function call or not or if our logic was sound.
+
+
+Documentation
+=======================================================================
+
+
+System Diagram
+-------------------------------------------------------------------------------
+<iframe src="https://drive.google.com/file/d/1rL2_ZVm_B1II0mr0OS58JatUfLf90A-3/preview" width="640" height="480"></iframe>
+
+
+State Machine Diagram
+-------------------------------------------------------------------------------
+
+
+<iframe src="https://drive.google.com/file/d/1P1iP5h4AN1aRkwsfIcGZpdcT-JeD3216/preview" width=”640” height=”480”></iframe>
+
+
+
+
+Detailed Code Layout
+=======================================================================
+
+
+ESP Code
+-------------------------------------------------------------------------------
+The code on the ESP is split up between the main battleship.ino file and several classes:
+* Button.h
+* Cursor.h
+* EnterText.h
+* Grid.h
+* HTTPHandler.h
+* Menu.h
+* Popup.h
+* Ship.h
+
+
+### Button.h
+This basically the button class from the homework. Moving it outside of the main .ino files makes handling button presses much more manageable and keeps the main file cleaner.
+
+
+### Grid.h
+The grid is the main way that the Battleship.ino file interacts with the game. The grid holds the ships, and the cursor, and the client can access those by calling methods on the grid. The grid is a large class with a lot of methods, so rather than showing the interface I will describe how it works. The grid holds all the information relevant to drawing someone’s board, and performing actions onto a board. There are methods to draw individual pieces of the board (ships, unplaced ships, cursor, the whole grid), and there are methods for interacting with the fields in the grid (cursorRight() and cursorDown() move the cursor through the grid and handle things like making sure that you can’t place a ship outside of the grid, and addShip() allows you to add a ship of specified size, location, and orientation).
+
+
+The video below shows me placing ships onto the grid using some of the methods described above.
+![Video Demonstration:https://youtu.be/yvr-xDcjonk](https://youtu.be/yvr-xDcjonk)
+
+
+
+
+
+
+### Cursor.h
+This class is pretty straight-forward and handles the cursor that helps the user navigate through the grid and make selections.
+~~~~~~~~~~~
+class Cursor {
+  int width,height;
+  public:
+    uint8_t x, y;
+    Cursor();
+    Cursor(uint8_t, uint8_t);
+    void draw(TFT_eSPI, uint8_t, uint8_t, uint8_t, uint16_t);
+};
+~~~~~~~~~~~
+
+
+### Ship.h
+This class holds information referring to individual ships: it’s coordinates, it’s path, where it’s been hit, whether or not it has spies. This is another class that the client of grid doesn’t have direct access to but can use through methods in the grid class. 
+~~~~~~~~~~~
+class Ship {
+        private:
+                uint8_t size;
+                
+        public:
+    uint8_t x[7];
+    uint8_t y[7];
+    uint8_t health;
+    uint8_t px1;
+    uint8_t py1;
+    uint8_t px2;
+    uint8_t py2;
+    int hits[7];
+    Ship();
+    Ship(uint8_t);
+                Ship(uint8_t, uint8_t, uint8_t, int[], bool);
+    int getSize();
+    bool occupies(uint8_t, uint8_t);
+    void draw(TFT_eSPI, uint8_t, uint8_t, uint8_t, uint16_t);
+    void drawPath(TFT_eSPI, uint8_t, uint8_t, uint8_t, uint16_t);
+    void drawTile(TFT_eSPI, uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+};
+~~~~~~~~~~~
+occupies() is a method that returns true iff the ship occupies a coordinate which is passed in as a parameter and is used for drawing only certain parts of the board when a spy is present.
+
+
+### Popup.h
+This produces the message at the beginning of the video. I created this class to easily create popup messages to help the user navigate through the game (in the future I can also see this being used to give the user instructions on controls). In addition to handling messages like the one in the image below, this class can also handle messages with two options (ex. “Do you want to do ___”, “YES”, “CANCEL”).
+
+
+<iframe src="https://drive.google.com/file/d/1tp0InIMBeRIrfu55WuvXPrceU7YpV_dD/preview" width=”640” height=”480”></iframe>
+
+
+This has proven to be very useful in building the game as it allows a simple way for me to give the user instructions, or to inform the user that they don’t have enough money left, can’t take a turn right now, etc.
+~~~~~~~~~~~
+class Popup{
+  char* msg;
+  char* op1;
+  char* op2;
+  bool select;
+  public:
+    TFT_eSPI tft;
+    Popup(TFT_eSPI, char*, char*, char*);
+    void changeSelect();
+    bool selection();
+    void draw();
+};
+~~~~~~~~~~~
+Since there are only two options the user’s selection is stored in a boolean. changeSelect() changes which option the user selects, and selection() returns that selection.
+
+
+This class is used extensively, and in one instance is used to display descriptions of moves which are pulled from the server. Because of this the input string that is passed in as a parameter to this class is split and rendered in such a way that it detects how long a word is so that no word is ever cut in half when displayed in the text box.
+
+
+### EnterText.h
+EnterText.h is very similar to the Popup.h class only that it allows the user to enter text as opposed to choosing between two options. As seen in the video below, it creates a little popup window with instructions and a text box (whose size can vary) for entering text. The user can cycle through letters and move on to the next letter of the string. The writing process isn’t ideal but there isn’t much writing necessary involved in the game so this should not be too big of an issue.
+![Video Demonstration:https://youtu.be/bAvjjOxWe_Y](https://youtu.be/bAvjjOxWe_Y)
+
+
+~~~~~~~~~~~
+class EnterText {
+  char* msg;
+  char input[50];
+  uint8_t active_index;
+  uint8_t char_index;
+  TFT_eSPI tft;
+  uint8_t s;
+  public:
+    EnterText(TFT_eSPI);
+    void newText(char*, uint8_t);
+    char* getText();
+    void nextLetter();
+    void prevLetter();
+    void incChar();
+    void decChar();
+    void draw();
+    void drawText();
+    bool getOk();
+};
+~~~~~~~~~~~
+Most of these methods are pretty self-explanatory from watching the video (nextLetter() moves to editing the next letter over, prevLetter() does the opposite, incChar() increments the current letter whie decChar decrements it, and the draw methods draw different parts of the object). The getOk() method checks where the user’s cursor is. If it is on the “OK” selection it will return true, otherwise it will return false. This is for implementing the use of this class with buttons.
+
+
+### Menu.h
+Similar to the Popup.cpp class and the EnterText.cpp this is a generic class that allows you to present the user with information and receive input. This is another step in making the different pieces of the game as modular as possible so that organizing and reorganizing high-level game structure is as painless as possible. This is used in Battleship.ino to serve as the main menu, to allow the player to choose which move to make, and to allow the player which other player they would like to apply that move to.
+![Video Demonstration: https://youtu.be/f_ZntBDLP_A ](https://youtu.be/f_ZntBDLP_A )
+~~~~~~~~~~~
+class Menu {
+  char* msg;
+  char ops[10][20];
+  uint8_t index;
+  TFT_eSPI tft;
+  public:
+    uint8_t n;
+    Menu(TFT_eSPI);
+    void newMenu(char*, char[][20], uint8_t);
+    void next();
+    int select();
+    void draw();
+    void drawOptions();
+    void drawCursor();
+};
+~~~~~~~~~~~
+You can pass in a message title as well as list of char arrays that represent up to ten different options. Drawing the menu then displays these options and allows you to call next() and select() to scroll between them. Another useful thing about this class is that you can call menu_instance.select() at any time to get the most recent selection made using that specific menu, which allows transitioning between different states while maintaining information the user has specified.
+
+
+### HTTPHandler.h
+Below is the .h file for the class I made to make POST and GET requests easier to deal with.
+~~~~~~~~~~~
+class HTTPHandler {
+  public:
+    char *response;
+    HTTPHandler();
+    void GET(char*, char*, char*, bool);
+    void POST(char*, char*, char*, bool);
+    void doHTTP(char*, char*, bool);
+  private:
+    void do_http_request(char*, char*, char*, uint16_t, uint16_t, uint8_t);
+    uint8_t char_append(char*, char, uint16_t);
+~~~~~~~~~~~
+The methods GET() and POST() take parameters host, address, body and serial. It uses these to create the properly formatted request and sends this along to the do_http_request() method which is the same method that has been provided to us in several labs.
+
+
+The reason I decided to do this was so that POST and GET requests would look cleaner in the main code. 
+
+
+When making a request, the response is saved in the response variable in the class and calling this variable accesses the class (I find calling http.response to be very clean). 
+
+
+### Battleship.ino
+This is the file that ties everything together and actually serves as the game. There are 12 states defined at the top of the file, but there are considerably more states in the game as many states behave differently based on other variables.
+
+
+When you boot up the ESP32, it checks whether there already exists a username written to memory. If there is, then the user is redirected to the main menu. Otherwise they are redirected to the login page. This is useful as the ESP can be restarted and unplugged without interrupting the game.
+
+
+When a user logs in, their username is sent to the server and added to the database into a new room, and the user is then redirected to the main menu.
+
+
+From the main menu the user can choose to take their turn or to logout. Logging out wipes the ESP’s flash memory pertaining to user data and redirects the user to the login screen. Choosing to take the a turn causes a bunch of GET requests to launch to the server:
+* The first is to check whether the player is able to make a move.
+        * if they have already made a move this round they will see a popup which tells them that they must wait for other players to select their moves
+        * if all their ships were destroyed in the previous round then they will see a popup notifying them that they have lost and they are then redirected back to the login screen.
+        * otherwise the GET requests continue as normal
+* Next check what moves are available.
+        * the GET requests returns a list of moves with their names, prices, and descriptions. These are used to create menu options.
+* Next get a list of the players in the users room.
+        * this is to create a list of menu options for choosing which player to attack.
+* Next get the amount of money has this round
+* Next get the boards for all players in the room
+        * this data is used to initialize an array of grids, with one grid for every player in the room which are later used for displaying hits, misses, spies etc.
+The player is then redirected to the moves menu
+
+
+From the moves menu user can select a move, read it’s description and apply the move on a player. Once the user has finished making their moves, they can select “end turn” from the moves menu and be brought back to the main menu. This selection also triggers a POST request which sends the move information to the server.
+
+
+
+
+battleship.db
+-------------------------------------------------------------------------------
+The database contains the following tables that stores data for the game.
+### `users` 
+
+
+This table stores data related to users. It contains the following columns:
+
+
+* `username`, text
+* `room_id`, int
+* `score`, int
+* `last_move`, timestamp
+* `cash`, int
+
+
+### `rooms` 
+
+
+This table stores data related to rooms. It contains the following columns:
+
+
+* `room_id`, int
+* `num_players`, int
+* `player_ids`, text, repr of a list of username strings
+* `last_move`, timestamp
+* `cash`, int
+
+
+### `ships` 
+
+
+This table stores data related to ships. It contains the following columns:
+
+
+* `username`, text
+* `ship_id`, int
+* `ship_pts`, text, repr of a list of tuples (x,y), which is a coordinate on a board that a ship is located
+* `ship_hits`, text, repr of a list of 0, 1 or 2 where 1 means hit, 2 means spied, 0 otherwise. Each index corresponds to the coordinate at the same index in ship_pts.
+* `ship_health`, int
+* `ship_spies`, text, repr of dictionary {username: [index]}
+
+
+* `ship_destroyed`, bool
+
+
+### `turn_updates` 
+
+
+This table stores moves that players send via POST requests before processing them. It contains the following columns:
+
+
+* `username`, text
+* `turn_time`, timestamp
+* `turn`, text, repr of a dictionary in the following format: { “user”: “NICK”, “cash”: 2, “moves”: [{“Type”: “SHOOT”, “x”: 1, “y”: 2, “target”: “iperper”}, {...}, ...]}
+
+
+### `turn_numbers` 
+
+
+This table stores data used to process a round update. It contains the following columns:
+
+
+* `room_id`, int
+* `turn_number`, int
+* `move_number`, int, the number of players that have submitted moves for that turn
+
+
+`Server.py`
+-------------------------------------------------------------------------------
+
+
+All functions that handle all requests and the database reside in server.py. Below are functions that deal with the main gameplay.
+
+
+### `add_user`
+This function adds a user to a room that is not full yet; otherwise, add a user to a new room.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def add_user(request):
+  '''
+  Takes new user and adds them to a room.  Does not initialize their board.
+  Returns user room.
+  
+  Request Data Format:  'data': '{"user": "jan"}'}
+  '''
+  try:
+    username = json.loads(request['data'])['user']
+  except KeyError:
+    return "Invalid Request. Check JSON format."
+  # Make sure user is not already in the database
+  # If so, return their room
+  try:
+    return get_user_room(username)
+  except ValueError:
+    # TODO: Handle errors properly if add_user_to_room add works but add to users table doesn't
+    user_room = add_user_to_room(username)
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+    # Add user to users table, do not update room yet
+    c.execute('''INSERT INTO users (username, room_id, score, last_move, cash) VALUES(?,?,?,?,?)''', (username, user_room, 0, 0, 0))
+    # Initialize shots for the user
+    last_update = datetime.datetime.now()
+    blank_shots = {}
+    c.execute('''INSERT INTO shoot_record (username, room_id, shots, last_update) VALUES(?,?,?,?)''', (username, user_room, repr(blank_shots), last_update))
+    
+    conn.commit()
+    conn.close()
+    return user_room
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+### `handle_ship_placement`
+After a player places all of their ships, a device sends a POST request to the server. This function processes a POST request and stores data into the `ships` table.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def handle_ship_placement(request):
+  '''
+  Places ships on users board for first time.
+  Assumes user is in database.
+  POST data format: "data": '{"user": "jan", "ships":[ {"coords": [[1,2],[1,3],[1,4]]}, {"coords": [[5,7],[5,8],[5,9]]} ]}'
+  '''
+  try:
+    data = json.loads(request['data'])
+    list_of_ships = data['ships']
+    owner_of_ship = data['user']
+  except KeyError:
+    return "Ship placement request not valid."
+  conn = sqlite3.connect(db)
+  c = conn.cursor()
+  ships_in_db = c.execute('''SELECT ship_id FROM ships WHERE username = ?''', (owner_of_ship,)).fetchone()
+  if ships_in_db is not None:
+    conn.commit()
+    conn.close()
+    return "Ships already placed in database."
+
+
+  for ship in list_of_ships:
+    ship_coords = ship['coords']
+    ship_paths = ship['paths']
+    ship_being_added = c.execute('''INSERT INTO ships VALUES (?,?,?,?,?,?,?,?);''', \
+      (owner_of_ship, list_of_ships.index(ship), str(ship_coords), str([0]*len(ship_coords)), len(ship_coords), str({}), False, repr(ship_paths)))
+  conn.commit()
+  conn.close()
+  return "Ships placed successfully"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+### `make_moves`
+
+
+This function accepts a request as an argument, and is called when players submit their moves via POST requests. Since the game involves multiple players, and all players submit moves at the same time, not one by one, all moves are stored in the `turn_updates` table, which functions like a buffer, first before processing moves.
+The code simply subtracts cash that is spent, and add 5 JBs, which is given to each player at the beginning of each turn, then store a request in the `turn_updates` table, and increment `move_number`, which keeps track of the number of players that have submitted their moves for a turn, in the `turn_numbers` table. If all players have submitted their move, then `update_round` is called, and the turn number is incremented by 1.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def make_moves(request):
+
+
+  try:
+    data = json.loads(request['data'])
+  except KeyError:
+    return "Move request not valid."
+  username = data['user']
+  substract_cash(username, data['cash'])
+  add_cash(username, cash_per_turn)
+  room_id = get_user_room(username)
+  turn_number = get_room_turn_number(room_id)
+  conn = sqlite3.connect(db)
+  c = conn.cursor()
+  c.execute('''INSERT INTO turn_updates (username, turn_time, turn, turn_number) VALUES(?,?,?,?)''', (username, datetime.datetime.now(), json.dumps(data), turn_number))
+  c.execute('''UPDATE turn_numbers SET move_number = move_number+1''')
+  conn.commit()
+  conn.close()
+  if check_all_players_make_moves(room_id):
+    r = update_round(room_id, turn_number)
+    increment_room_turn_number(room_id)
+    return r
+  return "Waiting for other players."
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+### `update_round`
+
+
+This function simply call functions that deal with each action in order. After all actions are processed, `check_game_over` is called to check whether any player's ships are all destroyed. If all of their ships are destroyed, then the function will clear their data. Then, `check_winner` is called to check if there is only one player, which is a winner, left, and clear the data of that player, and the room that he or she plays. 
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def update_round(room_id, turn_number):
+  moves = retrieve_moves(room_id, turn_number)
+  heal(moves)
+  update_moving_ships(room_id)
+  shoot_action(moves, room_id)
+  update_destroyed_ships(room_id)
+  check_game_over(room_id)
+  check_winner(room_id)
+  return "Round updated"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+### `get_moves_available`
+
+
+Since all players submit their moves concurrently, every player should be able to submit a move only if all players have submitted their moves for a previous round. This function is called when player tries to start a new turn, and return a status, which indicate whether players can continue the game. If some players have not submitted their moves, then it will return status 0, which ESP32 will block an action to submit a move on a device. If all players have submitted their moves, and that round ends, then it will send status 1, which ESP32 will allow players to continue the game. Otherwise, send status 2.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def get_moves_available(request):
+  """
+  Returns status of room for user. 
+  0 if user cannot make move. 1 if user can make move. 
+  2 if user has lost game.
+  """
+  user = request['values']['user']
+
+
+  # Check if user still alive:
+  if check_user_destroyed(user):
+    return json.dumps({"status": 2})
+
+
+  room_id = get_user_room(user)
+  turn_number = get_room_turn_number(room_id)
+  conn = sqlite3.connect(db)
+  c = conn.cursor()
+  user_turns = c.execute('''SELECT turn_number FROM turn_updates WHERE username = ? ORDER BY turn_number ASC;''', (user,)).fetchone()
+  conn.commit()
+  conn.close()
+
+
+  # If latest user turn does not match the turn of the room, the user can move
+  if user_turns is None or turn_number != user_turns[0]:
+    return json.dumps({"status": 1})
+  else:
+    return json.dumps({"status": 0})
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Weekly Milestones and Demos
+=======================================================================
+
+
+Week 1 Demos:
+-------------------------------------------------------------------------------
+
+
+| Goal/Task | Who | Deliverable -- be specific and detailed!! |
+| ---|------|----|
+| Make private git repo | Nick | First commit! | 
+| ---|------|----|
+| Draw more detailed system diagram of game| Everyone |Show diagram|
+| ---|------|----|
+| Decide on database schema, and post/get request schema | Vick | Written specification|
+| ---|------|----|
+|Choose final parts and order | Isaac | |
+| ---|------|----|
+| Implement grid and cell placement (updating database) | Jan | Demonstrate ships being placed via post requests |
+| ---|------|----|
+|Implement shoot mechanics (updating database) | Jan | Demonstrate via post requests |
+| ---|------|----|
+Implement destroying cell mechanics (updating database) | Isaac | Demonstrate via post requests |
+| ---|------|----|
+Implement moving cells across board (python server code) | Isaac | Demonstrate using get requests |
+| ---|------|----|
+Render grid and boat placements (local c++ code) | Nick | Demonstrate how ships are placed *| 
+| ---|------|----|
+Render shooting and destroying cells (local c++ code) | Nick | demonstrate button inputs executing a shot on an enemy ship, and sinking it |
+
+
+The most important deliverable and demo in hindsight was definitely rendering the grid and boat placements. This was crucial to being able to visualize our project and it laid out the building blocks for future implementation of graphical features for our game.
+
+
+![Video Demonstration](https://youtu.be/yvr-xDcjonk)
+
+
+
+
+Week 2 Milestones:
+-------------------------------------------------------------------------------
+
+
+| Goal/Task | Who | Deliverable -- be specific and detailed!! |
+| ---|------|----|
+| Complete basic gameplay rules | Explains how to load game, enter boards, take a turn (shoot), and confirm your turn, how currency goes down, and refresh to play next turn | Everyone |
+| ---|------|----|
+| Complete explanation of edge cases for boat placement | What happens when boats overlap, bounds on placement on the board | Jan, Isaac - Done |
+| ---|------|----|
+| Complete explanation of edge cases for shooting | What happens when multiple people shoot same spot (or with different ammo), spy shots getting destroyed?, shooting same spot in multiple,  rounds | Jan - Done |
+| ---|------|----|
+| Implement game currency as part of the database | Show that taking a shot decrements a user’s currency by 1, show that when the next turn comes around, user’s currency increases by 1 | Jan or whoever else wants to do it |
+| ---|------|----|
+| Implement spy feature (python code) | Include index that each user is spying on for a given ship, demonstrate that a portion of the map of the enemy for a user is revealed, show how the database updates a spy shot landing on a ship | Isaac |
+| ---|------|----|
+| Track hits / misses from user | Keep list of hits and misses after each turn update for each board a user is playing against | Vic |
+| ---|------|----|
+| Send gameboard to ESP | Show GET request with ships, spies, hits, misses for a user looking at enemy game board | Vic |
+| ---|------|----|
+| Creating account (adding user to database) | Show first-time user on ESP, which also send POST to server, and saves to local storage | Nick |
+| ---|------|----|
+| Create Tutorial for placing ships | Video going through tutorial explaining the placement rules (as described in previous goal) and then placing | Nick |
+| ---|------|----|
+| Render spy feature (local c++ code) | Show the hidden board rendered with two spy shots present on the board | Nick |
+| ---|------|----|
+| Create class to handle Get and Post requests | Show code, and a test place ship requests being sent | Nick |
+
+
+For the second week, the most important milestone here was creating an account and adding the user to the database. This functionality was kind of the foundation that we would build off of when we were creating the database and the rest of the game. This lead us to create multiple tables within our database and figure out how we want to store the data and where we want repeats so we can treat tables almost like SQL dictionaries for referencing data across different groups. This demonstration sparked a lot of other ideas that ended up being the core to the way that our project would handle information. This milestone is on par with importance as working out all of the details of how the intricacies of the game would work.
+
+
+![Video Demonstration:](https://youtu.be/bAvjjOxWe_Y)
+
+
+
+
+Week 3 Milestones:
+-------------------------------------------------------------------------------
+
+
+| Goal/Task | Who | Deliverable -- be specific and detailed!! |
+| ---|------|----|
+| Implement new Menu class | Demonstrate a menu, flipping through options and displaying the chosen option after selecting it. | Nick |
+| ---|------|----|
+| Implement moves menu on ESP32 | Demonstrate a GET request that pulls the types of moves available and their cost and renders them as a menu | Nick |
+| ---|------|----|
+| Select move and make POST request | Demonstrate user choosing a move from the menu, placing their moves and their number of JanBucks decreasing appropriately. Show the information being passed to the server in a POST request. | Nick |
+| ---|------|----|
+| Implement shooting tutorial | Similar walkthrough to the placement tutorial | Nick |
+| ---|------|----|
+| Decide on TURN POST update | Show documentation for this POST request that includes everything server needs to know to perform an update | Isaac |
+| ---|------|----|
+| Implement turn_updates table usage | Show postman request. Show how server receives TURN POST request  into a buffer table, such that when the last person in a room takes their turn in a round, the update script gets called to propagate changes to the other table | Vic |
+| ---|------|----|
+| Implement update script on server | Show postman request. Use the saved turns from the turn_updates table to perform the round updates as described in the rules (moves, healing, shots, etc) on the database.  | Vic |
+| ---|------|----|
+| Implement ship movement function on server | Show code. This will be called by the round update script.  This will go through every user’s turn, and update boats positions depending on if the user halted the ship or extra move.  After looking at user actions, it will apply the normal ship movements due to the ship paths in addition to extra movements from user actions. | Jan |
+| ---|------|----|
+| Implement shot from turn_updates on server | Show code. This will be called by the round update script.  It will go through every user’s turn, and update the ships that were shot at. It will not tell if a ship has been destroyed, as this is decided during healing.  It will first apply normal shots, then apply spy shots, such that spy shots will not be used if that part of the ship was already damaged (in that round or previous) | Vic |
+| ---|------|----|
+| Implement healing from turn_updates on server. | Show code. This will be called from the round update script.  This will apply healing to all the ships based on turns. | Isaac |
+| ---|------|----|
+| Implement ship destroy on turn_updates. | Show code.  If all moves have been applied for a certain board, go through each ship and check if health is zero.  If so, mark ship destroyed, which prevents it from being sent down to the ESP on future requests. | Isaac |
+
+
+For the third week, the most important milestones were implementing the movement, healing, and shooting features of the code. This is really where the heart of the gameplay of our project comes in. In our version of battleship, ships move around, players can heal their ships and you can fire multiple shots per turn. Implementing all of this was key to being able to have a polished project at the very end. This was also the beginning to a very long series of bugs that we would later have to deal with but it was great that we could lay down the baseline code for things in this week, and then polish up the server handling and issues before the final week of coding.
+
+
+In terms of the aesthetics side of things, allowing the user to choose the move that they would like to do was not only pretty to look at on the ESP, but also a very important bridge between the two parts of our project. It finally linked the commands being issued from the ESP to the server file that would then have to process them and make the appropriate changes to the databases.
+
+
+![Video Demonstration](https://youtu.be/X3uDDH6hm30)
+
+
+
+
+Week 4 Milestones:
+-------------------------------------------------------------------------------
+| Goal/Task |  Deliverable -- be specific and detailed!! | Who |
+| ---|------|----|
+| Add ship paths to ship placement POST request | Show documentation for a new POST request format that includes ship paths. | Jan |
+| ---|------|----|
+| Add ship path placement on ESP |  Demonstrate how to add ship paths for ships on ESP. | Nick | 
+| ---|------|----|
+| Send ship_placement from ESP to server on game start | Implement the API POST request on the ESP that the server is currently user.  Show postman table results of before and after the request from the ESP. | Nick |
+| ---|------|----|
+| Decide on  `move_available` request format  based on players in room and turns made | Show documentation for a request format. | Isaac - done |
+| ---|------|----|
+| Implement ‘move_available’ on server | Show postman request. The response tells whether all players in a room submit their moves. Players can continue only if all players already submit their moves, and a round is concluded. | Isaac - done |
+| ---|------|----|
+| Handle ‘move_avaiable’ each time ‘make_move’ pressed | Video showing that if a move isn’t available, then ‘make_move’ has popup showing no moves available yet, otherwise enters into round menu. | Nick |
+| ---|------|----|
+| End game (remove user from room) request on server |Show code. This code should check whether all ships are destroyed. | Vic |
+| ---|------|----|
+| ESP end game based on ‘move available’ return | Demonstrate Game Over on ESP when all ships are destroyed. | Nick |
+| ---|------|----|
+| Debug ship_movement on turn update | Show postman request. Ship coordinates should reflect movements submitted through a request. | Jan |
+| ---|------|----|
+| Update cash based on turn on server | Show POST request. After a player submitted a move, their cash should be incremented by a certain amount. | Vic |
+| ---|------|----|
+| Create a script to test the server automatically. | Show code used to test the server. | Isaac -done |
+| ---|------|----|
+| Test multi players playing game on ESP | Demonstrate playing games. | Everyone |
+
+
+For this final week, the most important deliverable was creating a script to test the server automatically. This really saved time in the debugging process as we could safely create a little sandbox for us to test out the functionality of our functions and catch mistakes or bugs that simply cannot be caught when you don’t have your whole system linked up together. This really made it easier to find those mistakes and change them accordingly and was the heart and soul of the editing process. We do not have a video of this deliverable as it was shown in the Week 4 call. However, it was very eye opening in that it finally put every piece together and was able to simulate how a game would run and how every parts of the databases would be updated with every player’s turn.
+
+
+
+
+Team Members
+=======================================================================
+
+
+* Niklas Mannhardt
+* Isaac Perper
+* Jan Wojcik
+* Veerapatr Yotamornsunthorn
+
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js" charset="utf-8"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
