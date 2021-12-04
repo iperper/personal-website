@@ -5,6 +5,10 @@
   "scripts": {
     "start": "node ./bin/www"
   },
+  "author": "Isaac Perper",
+  "engines": {
+    "node": "17.x"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "debug": "^4.3.3",
