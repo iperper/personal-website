@@ -7,9 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('personal-website:server');
 var http = require('http');
-const VisitorDB = require('../db/VisitorDB');
+// const VisitorDB = require('../db/VisitorDB');
 
-VisitorDB.createTables();
+// VisitorDB.createTables();
 
 /**
  * Get port from environment and store in Express.

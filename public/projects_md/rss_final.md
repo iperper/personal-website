@@ -214,8 +214,8 @@ For the second model, which navigated the entire stata basement loop, the improv
 
 <div style="width:image width px; font-size:90%; text-align:center;">
 	<video class="center" width=80% autoplay loop>
-		<source src="/images/rss/final/stata_loop_working-low_qual.webm" type="video/webm">
-		<source src="/images/rss/final/stata_loop_working-low_qual.mp4" type="video/mp4">
+		<source src="/images/rss/final/stata_loop_working.webm" type="video/webm">
+		<source src="/images/rss/final/stata_loop_working.mp4" type="video/mp4">
 	</video>
 	Video 9: The final trained model was able to successfully navigate the entire stata basement loop relying solely on the input images from the car's three webcams. 
 </div>
